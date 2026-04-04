@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -19,7 +20,6 @@ import ConverterPanel from './components/ConverterPanel';
 export default function HomePage() {
   const background = useThemeColor({}, 'background');
   const text = useThemeColor({}, 'text');
-  const textSecondary = useThemeColor({}, 'textSecondary');
 
   const {
     category: currencyCategory,
@@ -51,10 +51,11 @@ export default function HomePage() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
+            <Image
+              source={require('@/assets/images/icon.png')}
+              style={styles.icon}
+            />
             <Text style={[styles.title, { color: text }]}>Unit Utils</Text>
-            <Text style={[styles.subtitle, { color: textSecondary }]}>
-              Unit Converter
-            </Text>
           </View>
 
           <CategoryBar
@@ -86,16 +87,20 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: 20,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
+  icon: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
   },
-  subtitle: {
-    fontSize: 16,
-    marginTop: 4,
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
   },
 });
