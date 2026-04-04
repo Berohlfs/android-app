@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -11,7 +11,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { categories } from './constants/categories';
+import { categories as staticCategories } from './constants/categories';
+import { useCurrencyCategory } from './hooks/use-currency-category';
 import CategoryBar from './components/CategoryBar';
 import ConverterPanel from './components/ConverterPanel';
 
@@ -20,8 +21,23 @@ export default function HomePage() {
   const text = useThemeColor({}, 'text');
   const textSecondary = useThemeColor({}, 'textSecondary');
 
-  const [selectedKey, setSelectedKey] = useState(categories[0].key);
-  const activeCategory = categories.find((c) => c.key === selectedKey)!;
+  const {
+    category: currencyCategory,
+    loading: currencyLoading,
+    error: currencyError,
+  } = useCurrencyCategory();
+
+  const allCategories = useMemo(() => {
+    const cats = [...staticCategories];
+    // Insert currency as 4th item (after Temp)
+    cats.splice(3, 0, currencyCategory);
+    return cats;
+  }, [currencyCategory]);
+
+  const [selectedKey, setSelectedKey] = useState(staticCategories[0].key);
+  const activeCategory = allCategories.find((c) => c.key === selectedKey)!;
+
+  const isCurrency = selectedKey === 'currency';
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: background }]}>
@@ -42,12 +58,17 @@ export default function HomePage() {
           </View>
 
           <CategoryBar
-            categories={categories}
+            categories={allCategories}
             selectedKey={selectedKey}
             onSelect={setSelectedKey}
           />
 
-          <ConverterPanel key={selectedKey} category={activeCategory} />
+          <ConverterPanel
+            key={selectedKey}
+            category={activeCategory}
+            loading={isCurrency ? currencyLoading : undefined}
+            error={isCurrency ? currencyError : undefined}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
