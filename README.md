@@ -8,7 +8,7 @@ Unit Utils is a lightweight app that performs unit and currency conversions dire
 
 ## Features
 
-- Fast, local unit conversions ⚡  
+- Fast, local unit conversions
 - Currency conversion with live exchange rates  
 - No accounts, no tracking  
 - No data storage  
